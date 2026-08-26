@@ -17,7 +17,7 @@ from pydantic.fields import FieldInfo
 from typing_extensions import Self, override
 
 from ..errors import ConfigError
-from ..pydanticutils import compute_field_annotations
+from ..pydanticutils import compute_field_annotations, get_namespace_annotations
 from .mixins import SchemaBaseMixins, SchemaOperationMixin
 from .schema_registry import registry as global_registry
 from .utils.converter import convert_django_field_with_choices
@@ -158,7 +158,7 @@ class ModelSchemaMetaclass(ModelMetaclass):
                 }
 
         if config_instance and config_instance.model and not config_instance.abstract:
-            annotations = namespace.get('__annotations__', {})
+            annotations = get_namespace_annotations(namespace)
             try:
                 model_fields = list(config_instance.model_fields())
             except AttributeError as exc:

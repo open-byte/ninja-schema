@@ -8,9 +8,7 @@ license-files = ["LICENSE"]
 authors = [
     { name = "Izcar J. Munoz Torrez", email = "izcarmt95@gmail.com" }
 ]
-# Capped below 3.14: PEP 649 defers class annotations, so the metaclass sees an empty
-# `__annotations__` and silently drops Source/MethodSource fields. Lift once that is fixed.
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.10"
 keywords =["django", "pydantic", "schema", "serialization", "validation", "orm", "openapi"]
 dependencies = [
     "django>=3.2",
@@ -33,6 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
