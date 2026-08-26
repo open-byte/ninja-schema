@@ -149,7 +149,11 @@ which pins Django and Pydantic instead of resolving from the lock. When a floor
 in `pyproject.toml` changes, add or move a cell in that matrix so the claim stays
 tested.
 
-`requires-python` is capped below 3.14: [PEP 649](https://peps.python.org/pep-0649/)
-defers the evaluation of class annotations, so the schema metaclass reads an
-empty `__annotations__` and silently drops `Source` and `MethodSource` fields.
-The cap is lifted once the metaclass reads annotations through `annotationlib`.
+`requires-python` is uncapped. Python 3.14 needed the schema metaclass to change
+how it reads a class body: [PEP 649](https://peps.python.org/pep-0649/) defers the
+evaluation of class annotations, so `__annotations__` is no longer sitting in the
+namespace and reading it returned nothing — silently dropping every declared
+`Source` and `MethodSource` field. The metaclass now goes through
+[`annotationlib`](https://docs.python.org/3.14/library/annotationlib.html)
+instead, and drops the `__annotate_func__` the body left behind once it has
+written the fields it computed.

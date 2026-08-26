@@ -41,29 +41,40 @@ How each Django field is converted into a Pydantic annotation.
 --8<-- "examples/models.py:speaker-profile"
 ```
 
+`type_name` below only shortens the display: Python 3.14 renders `Optional[int]`
+as `int | None`, so printing the annotation raw would read differently depending on
+the interpreter. The annotation objects themselves are the same on every version.
+
 ```pycon
+>>> from typing import get_args
+>>> def type_name(annotation):
+...     args = get_args(annotation)
+...     if type(None) in args:
+...         inner = ', '.join(type_name(arg) for arg in args if arg is not type(None))
+...         return f'Optional[{inner}]'
+...     return getattr(annotation, '__name__', str(annotation))
 >>> class SpeakerProfileSchema(ModelSchema):
 ...     class Config:
 ...         model = models.SpeakerProfile
 >>> for name, info in SpeakerProfileSchema.model_fields.items():
-...     print(f'{name:16} {info.annotation}')
-id               typing.Optional[int]
-uuid             <class 'uuid.UUID'>
-full_name        <class 'str'>
-biography        typing.Optional[str]
-slug             <class 'str'>
-email            <class 'pydantic.networks.EmailStr'>
-website          <class 'pydantic.networks.AnyUrl'>
-talks_given      <class 'int'>
-rating           typing.Optional[float]
-fee              typing.Optional[decimal.Decimal]
-is_active        <class 'bool'>
-joined_at        typing.Optional[datetime.datetime]
-birth_date       typing.Optional[datetime.date]
-preferred_slot   typing.Optional[datetime.time]
-session_length   typing.Optional[datetime.timedelta]
-last_login_ip    typing.Optional[pydantic.networks.IPvAnyAddress]
-metadata         typing.Optional[pydantic.types.Json]
+...     print(f'{name:16} {type_name(info.annotation)}')
+id               Optional[int]
+uuid             UUID
+full_name        str
+biography        Optional[str]
+slug             str
+email            EmailStr
+website          AnyUrl
+talks_given      int
+rating           Optional[float]
+fee              Optional[Decimal]
+is_active        bool
+joined_at        Optional[datetime]
+birth_date       Optional[date]
+preferred_slot   Optional[time]
+session_length   Optional[timedelta]
+last_login_ip    Optional[IPvAnyAddress]
+metadata         Optional[Json]
 
 ```
 
